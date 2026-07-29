@@ -1,0 +1,9 @@
+version: 1
+services:
+  - name: kaoqin
+    type: web
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    env:
+      - name: PYTHON_VERSION
+        value: "3.12"
