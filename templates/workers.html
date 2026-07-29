@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}工人管理{% endblock %}
+{% block subtitle %}添加和管理你的工人{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-title">➕ 添加工人</div>
+    <form method="POST">
+        <div class="form-group">
+            <label>姓名</label>
+            <input type="text" name="name" class="form-input" placeholder="工人姓名" required>
+        </div>
+        <div class="form-group">
+            <label>电话（选填）</label>
+            <input type="text" name="phone" class="form-input" placeholder="手机号码">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">添加</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-title">👥 工人列表 ({{ workers|length }})</div>
+    {% if workers %}
+    <div style="display:flex;flex-direction:column;gap:8px;">
+        {% for w in workers %}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f8f9fa;border-radius:8px;">
+            <div>
+                <div style="font-size:15px;font-weight:500;">{{ w.name }}</div>
+                {% if w.phone %}
+                <div style="font-size:12px;color:#999;">📞 {{ w.phone }}</div>
+                {% endif %}
+                <div style="font-size:12px;color:#999;">已出勤 {{ w.days_count }} 天</div>
+            </div>
+            <form method="POST" action="{{ url_for('delete_worker', worker_id=w.id) }}" onsubmit="return confirm('确定要删除 {{ w.name }} 吗？删除后考勤记录也会清空。')">
+                <button type="submit" class="btn btn-danger btn-sm">删除</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">还没有工人，在上方添加吧</div>
+    {% endif %}
+</div>
+
+{% endblock %}
