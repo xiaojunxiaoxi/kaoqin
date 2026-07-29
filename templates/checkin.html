@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}签到{% endblock %}
+{% block subtitle %}记录工人出勤与工地{% endblock %}
+{% block content %}
+
+<div class="card">
+    <form method="POST">
+        <div class="form-group">
+            <label>📅 日期</label>
+            <input type="date" name="work_date" value="{{ today }}" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label>🏗️ 工地（小区名）</label>
+            <input type="text" name="location" class="form-input" placeholder="例如：万科城市花园" required>
+        </div>
+
+        <div class="form-group">
+            <label>👷 今天出勤的工人（可多选）</label>
+            <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+                {% for w in workers %}
+                <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8f9fa;border-radius:8px;cursor:pointer;">
+                    <input type="checkbox" name="worker_ids" value="{{ w.id }}" style="width:18px;height:18px;accent-color:#1a73e8;">
+                    <span style="font-size:15px;">{{ w.name }}</span>
+                    {% if w.phone %}
+                    <span style="font-size:12px;color:#999;">{{ w.phone }}</span>
+                    {% endif %}
+                </label>
+                {% else %}
+                <div class="empty-state">还没有添加工人，先去添加吧</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if workers %}
+        <div style="display:flex;gap:10px;">
+            <button type="submit" class="btn btn-success btn-block">✅ 确认签到</button>
+        </div>
+        {% else %}
+        <a href="{{ url_for('workers') }}" class="btn btn-primary btn-block" style="text-align:center;">👥 先添加工人</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if workers %}
+<div class="card">
+    <div class="card-title">⚡ 快捷操作</div>
+    <p style="font-size:14px;color:#666;margin-bottom:10px;">点击工人姓名快速勾选/取消</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        {% for w in workers %}
+        <span class="worker-tag" style="cursor:pointer;" onclick="toggleWorker({{ w.id }})">{{ w.name }}</span>
+        {% endfor %}
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;">
+        <button class="btn btn-sm btn-outline" onclick="selectAll()">全选</button>
+        <button class="btn btn-sm btn-outline" onclick="deselectAll()">清空</button>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function toggleWorker(id) {
+    var cb = document.querySelector('input[name="worker_ids"][value="' + id + '"]');
+    if (cb) cb.checked = !cb.checked;
+}
+function selectAll() {
+    document.querySelectorAll('input[name="worker_ids"]').forEach(function(cb) { cb.checked = true; });
+}
+function deselectAll() {
+    document.querySelectorAll('input[name="worker_ids"]').forEach(function(cb) { cb.checked = false; });
+}
+</script>
+
+{% endblock %}
