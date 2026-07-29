@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}今日出勤{% endblock %}
+{% block subtitle %}{{ today }} 出勤情况{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-title">✅ 今日已签到 ({{ checked_in|length }}人)</div>
+    {% if checked_in %}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        {% for c in checked_in %}
+        <span class="worker-tag">{{ c.worker_name }}</span>
+        {% endfor %}
+    </div>
+    {% if checked_in[0].location %}
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid #eee;font-size:14px;color:#666;">
+        📍 工地：<strong>{{ checked_in[0].location }}</strong>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">今天还没有人签到</div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-title">⏳ 今日未签到 ({{ not_checked_in|length }}人)</div>
+    {% if not_checked_in %}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        {% for w in not_checked_in %}
+        <span style="background:#fce8e6;color:#c5221f;padding:4px 12px;border-radius:16px;font-size:14px;">{{ w.name }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">全部已签到，完美！</div>
+    {% endif %}
+</div>
+
+<div style="display:flex;gap:10px;">
+    <a href="{{ url_for('checkin') }}" class="btn btn-primary btn-block" style="text-align:center;">
+        📝 去签到
+    </a>
+    <a href="{{ url_for('records') }}" class="btn btn-outline btn-block" style="text-align:center;">
+        📊 查看记录
+    </a>
+</div>
+
+{% endblock %}
